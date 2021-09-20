@@ -56,10 +56,6 @@ public class CoffeeMachine {
         }
     }
 
-    private static void exit() {
-
-    }
-
     private static void buy(int mlwater, int mlmilk, int coffeeBeans, int disposableCups, int money) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:");

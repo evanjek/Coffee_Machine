@@ -2,8 +2,9 @@ package machine;
 
 import java.util.Scanner;
 
+import static java.lang.Math.min;
+
 public class CoffeeMachine {
-    static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
 
@@ -13,73 +14,134 @@ public class CoffeeMachine {
         int disposableCups = 9;
         int money = 550;
 
-        coffeeMachineHas(mlWater, mlMilk, coffeeBeans, disposableCups, money);
-        String action = action();
-        if (action.equals("buy"))
-            buy(mlWater, mlMilk, coffeeBeans, disposableCups, money);
-        else if (action.equals("fill"))
-            fill(mlWater, mlMilk, coffeeBeans, disposableCups, money);
-        else if (action.equals("take"))
-            take(mlWater, mlMilk, coffeeBeans, disposableCups, money);
+        action(mlWater, mlMilk, coffeeBeans, disposableCups, money);
+
     }
 
     private static void coffeeMachineHas(int mlwater, int mlmilk, int coffeeBeans, int disposableCups, int money) {
         System.out.println("The coffee machine has:");
-        System.out.println(mlwater + " ml of water\n"
-                + mlmilk + " ml of milk\n"
-                + coffeeBeans + " g of coffee beans\n"
-                + disposableCups + " disposable cups\n"
-                + "$" + money + " of money");
+        System.out.println(mlwater + " ml of water");
+        System.out.println(mlmilk + " ml of milk");
+        System.out.println(coffeeBeans + " g of coffee beans");
+        System.out.println(disposableCups + " disposable cups");
+        System.out.println("$" + money + " of money");
+        action(mlwater, mlmilk, coffeeBeans, disposableCups, money);
     }
 
-    private static String action() {
-        System.out.println("\nWrite action (buy, fill, take):");
+
+    private static void action(int mlWater, int mlMilk, int coffeeBeans, int disposableCups, int money) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nWrite action (buy, fill, take, remaining, exit):");
         String action = scanner.next();
         switch (action) {
             case "buy":
+                buy(mlWater, mlMilk, coffeeBeans, disposableCups, money);
                 break;
             case "fill":
+                fill(mlWater, mlMilk, coffeeBeans, disposableCups, money);
                 break;
             case "take":
+                take(mlWater, mlMilk, coffeeBeans, disposableCups, money);
                 break;
+            case "exit":
+                return;
+            case "remaining":
+                coffeeMachineHas(mlWater, mlMilk, coffeeBeans, disposableCups, money);
+                break;
+            case "back":
+
             default:
                 System.out.println("You have entered invalid action");
+                break;
         }
-        return action;
+    }
+
+    private static void exit() {
+
     }
 
     private static void buy(int mlwater, int mlmilk, int coffeeBeans, int disposableCups, int money) {
-        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:");
-        int buy = scanner.nextInt();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:");
+        String buy = scanner.next();
+        int min;
+        String enough = null;
         switch (buy) {
-            case 1:
-                mlwater -= 250;
-                coffeeBeans -= 16;
-                disposableCups -= 1;
-                money += 4;
+            case "1":
+                if (mlwater > 250 && coffeeBeans > 16 && disposableCups > 1) {
+                    mlwater -= 250;
+                    coffeeBeans -= 16;
+                    disposableCups -= 1;
+                    money += 4;
+                    System.out.println("I have enough resources, making you a coffee!");
+                } else {
+                    min = min(mlwater / 250, min(coffeeBeans / 16, disposableCups));
+                    if (min == mlwater / 250)
+                        enough = "water";
+                    else if (min == mlmilk / 16)
+                        enough = "milk";
+                    else if (min == coffeeBeans)
+                        enough = "coffee beans";
+                    else if (min == disposableCups)
+                        enough = "disposable cups";
+                    System.out.println("Sorry, not enough" + enough + "!");
+                }
                 break;
-            case 2:
-                mlwater -= 350;
-                mlmilk -= 75;
-                coffeeBeans -= 20;
-                disposableCups -= 1;
-                money += 7;
+            case "2":
+                if (mlwater > 350 && mlmilk > 75 && coffeeBeans > 16 && disposableCups > 1) {
+                    mlwater -= 350;
+                    mlmilk -= 75;
+                    coffeeBeans -= 20;
+                    disposableCups -= 1;
+                    money += 7;
+                    System.out.println("I have enough resources, making you a coffee!");
+                } else {
+                    min = min(mlwater / 350, min(mlmilk / 75, min(coffeeBeans / 16, disposableCups)));
+                    if (min == mlwater / 350)
+                        enough = "water";
+                    else if (min == mlmilk / 75)
+                        enough = "milk";
+                    else if (min == coffeeBeans / 16)
+                        enough = "coffee beans";
+                    else if (min == disposableCups)
+                        enough = "disposable cups";
+                    System.out.println("Sorry, not enough " + enough + "!");
+                }
                 break;
-            case 3:
-                mlwater -= 200;
-                mlmilk -= 100;
-                coffeeBeans -= 12;
-                disposableCups -= 1;
-                money += 6;
+            case "3":
+                if (mlwater > 200 && mlmilk > 100 && coffeeBeans > 12 && disposableCups > 1) {
+                    mlwater -= 200;
+                    mlmilk -= 100;
+                    coffeeBeans -= 12;
+                    disposableCups -= 1;
+                    money += 6;
+                    System.out.println("I have enough resources, making you a coffee!");
+                } else {
+                    min = min(mlwater / 200, min(mlmilk / 100, min(coffeeBeans / 12, disposableCups)));
+                    if (min == mlwater / 200)
+                        enough = "water";
+                    else if (min == mlmilk / 100)
+                        enough = "milk";
+                    else if (min == coffeeBeans / 12)
+                        enough = "coffee beans";
+                    else if (min == disposableCups)
+                        enough = "disposable cups";
+                    System.out.println("Sorry, not enough" + enough + "!");
+                }
                 break;
+            case "back":
+                action(mlwater, mlmilk, coffeeBeans, disposableCups, money);
+            case "exit":
+                return;
             default:
                 System.out.println("You have entered invalid number");
+                break;
         }
-        System.out.println();
-        coffeeMachineHas(mlwater, mlmilk, coffeeBeans, disposableCups, money);
+        action(mlwater, mlmilk, coffeeBeans, disposableCups, money);
     }
 
     private static void fill(int mlwater, int mlmilk, int coffeeBeans, int disposableCups, int money) {
+        Scanner scanner = new Scanner(System.in);
         int mlwaterAdd, mlmilkAdd, coffeeBeansAdd, disposableCupsAdd;
         System.out.println("Write how many ml of water you want to add:");
         mlwaterAdd = scanner.nextInt();
@@ -93,9 +155,8 @@ public class CoffeeMachine {
         System.out.println("Write how many disposable cups of coffee you want to add:");
         disposableCupsAdd = scanner.nextInt();
         disposableCups += disposableCupsAdd;
-        System.out.println();
 
-        coffeeMachineHas(mlwater, mlmilk, coffeeBeans, disposableCups, money);
+        action(mlwater, mlmilk, coffeeBeans, disposableCups, money);
 
 
     }
@@ -103,6 +164,6 @@ public class CoffeeMachine {
     private static void take(int mlwater, int mlmilk, int coffeeBeans, int disposableCups, int money) {
         System.out.println("I gave you $" + money + "\n");
         money -= money;
-        coffeeMachineHas(mlwater, mlmilk, coffeeBeans, disposableCups, money);
+        action(mlwater, mlmilk, coffeeBeans, disposableCups, money);
     }
 }

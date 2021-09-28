@@ -1,18 +1,40 @@
 package machine;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
+import static java.lang.Integer.parseInt;
 import static java.lang.Math.min;
 
 public class CoffeeMachine {
 
     public static void main(String[] args) {
 
-        int mlWater = 400;
-        int mlMilk = 540;
-        int coffeeBeans = 120;
-        int disposableCups = 9;
-        int money = 550;
+        int mlWater = 0, mlMilk = 0, coffeeBeans = 0, disposableCups = 0, money = 0;
+
+        try {
+            Scanner s = new Scanner(new File("doc/coffee_machine_status.txt"));
+            if (s.hasNextLine()) {
+                String data = s.nextLine();
+                String[] fields = data.split("; ");
+                mlWater = parseInt(fields[0]);
+                mlMilk = parseInt(fields[1]);
+                coffeeBeans = parseInt(fields[2]);
+                disposableCups = parseInt(fields[3]);
+                money = parseInt(fields[4]);
+
+            } else {
+                mlWater = 400;
+                mlMilk = 540;
+                coffeeBeans = 120;
+                disposableCups = 9;
+                money = 550;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         action(mlWater, mlMilk, coffeeBeans, disposableCups, money);
 
@@ -44,6 +66,13 @@ public class CoffeeMachine {
                 take(mlWater, mlMilk, coffeeBeans, disposableCups, money);
                 break;
             case "exit":
+                try {
+                    FileWriter w = new FileWriter("doc/coffee_machine_status.txt");
+                    w.write(String.format("%d; %d; %d; %d; %d", mlWater, mlMilk, coffeeBeans, disposableCups, money));
+                    w.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return;
             case "remaining":
                 coffeeMachineHas(mlWater, mlMilk, coffeeBeans, disposableCups, money);
@@ -52,6 +81,7 @@ public class CoffeeMachine {
 
             default:
                 System.out.println("You have entered invalid action");
+                action(mlWater, mlMilk, coffeeBeans, disposableCups, money);
                 break;
         }
     }
@@ -127,8 +157,6 @@ public class CoffeeMachine {
                 break;
             case "back":
                 action(mlwater, mlmilk, coffeeBeans, disposableCups, money);
-            case "exit":
-                return;
             default:
                 System.out.println("You have entered invalid number");
                 break;
